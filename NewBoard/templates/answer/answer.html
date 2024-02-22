@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Answers</title>
+</head>
+<body>
+    <form action="" method="get">
+        {{ filter.form.as_p }}
+        <input type="submit" value="Найти"/>
+    </form>
+    {% if filter.qs %}
+        {% for answer in filter.qs %}
+            <ul>
+            <li><strong>{{ answer.author }} {{ answer.date }}&nbsp;
+                {% if answer.post.author == request.user or answer.author == request.user %}
+                    <button><a href="{% url 'delete_answer' answer.id %}">Удалить</a></button>
+
+                {% endif %}
+                {% if answer.post.author == request.user and not answer.is_allowed %}
+                    <button><a href="{% url 'allow_answer' answer.id %}">Принять</a></button>
+                {% elif answer.post.author == request.user and answer.is_allowed %}
+                    (Принято)
+                {% endif %}
+            </strong></li>
+            <li><strong>Обьявление: <a href="{% url 'post' answer.post.id %}">{{ answer.post }}</a></strong>
+            <ul>
+            <li><em>{{ answer.content }}</em></li>
+            </ul>
+            </li>
+            </ul>
+        {% endfor %}
+    {% else %}
+    <h2>Откликов нет!</h2>
+    {% endif %}
+</body>
+</html>
